@@ -4,7 +4,7 @@
 	Purpose: Central class of a specific implemention. Usually used to communicate with the device. An instance is just deleted and new generated with the reset command. Every command can use it.
 
 	@author Lukas Mueller (ilt.hsr.ch)
-	@version 0.1 2015_06_12
+	@version 0.2 2016_05_25
 */
 
 #include "SpecificCore.h"
@@ -2006,30 +2006,16 @@ namespace SPI
 		}
 		void SpecificCore::readedCallback(boost::system::error_code error, size_t size)
 		{
-			std::lock_guard<std::mutex> lockGuard(_processCoreMutex);
-			if(!error)
+			if(!_isClosing)
 			{
-				for(unsigned int i = 0; i < size; i++)
+				std::lock_guard<std::mutex> lockGuard(_processCoreMutex);
+				if(!error)
 				{
-					if(_readBuffer[i] == 13 && size > i+1 && _readBuffer[i+1] == 10)
+					for(unsigned int i = 0; i < size; i++)
 					{
-						i++;
-						if(_nextReceivingLine.length() > 0)
+						if(_readBuffer[i] == 13 && size > i+1 && _readBuffer[i+1] == 10)
 						{
-							_receivedLines.push(_nextReceivingLine);
-#ifdef RS232_COM_DEBUG
-							std::cout << "RS232 read: " << _nextReceivingLine << std::endl;
-#endif
-							_receivedLinesCount += 1;
-							_nextReceivingLine = "";
-						}
-					}
-					else if(i == 0 && _readBuffer[0] == 10)
-					{
-						int indexLast = _nextReceivingLine.length() - 1;
-						if(_nextReceivingLine.at(indexLast) == 13)
-						{
-							_nextReceivingLine.erase(indexLast);
+							i++;
 							if(_nextReceivingLine.length() > 0)
 							{
 								_receivedLines.push(_nextReceivingLine);
@@ -2040,17 +2026,31 @@ namespace SPI
 								_nextReceivingLine = "";
 							}
 						}
+						else if(i == 0 && _readBuffer[0] == 10)
+						{
+							int indexLast = _nextReceivingLine.length() - 1;
+							if(_nextReceivingLine.at(indexLast) == 13)
+							{
+								_nextReceivingLine.erase(indexLast);
+								if(_nextReceivingLine.length() > 0)
+								{
+									_receivedLines.push(_nextReceivingLine);
+#ifdef RS232_COM_DEBUG
+									std::cout << "RS232 read: " << _nextReceivingLine << std::endl;
+#endif
+									_receivedLinesCount += 1;
+									_nextReceivingLine = "";
+								}
+							}
+						}
+						else
+						{
+							_nextReceivingLine += _readBuffer[i];
+						}
 					}
-					else
-					{
-						_nextReceivingLine += _readBuffer[i];
-					}
+					_serial_port->async_read_some(boost::asio::buffer(_readBuffer, 1024), boost::bind(&SpecificCore::readedCallback, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 				}
-				_serial_port->async_read_some(boost::asio::buffer(_readBuffer, 1024), boost::bind(&SpecificCore::readedCallback, this, boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
-			}
-			else
-			{
-				if(!_isClosing)
+				else
 				{
 					_connectionErrorMessage = error.message();
 					_connectionError = true;

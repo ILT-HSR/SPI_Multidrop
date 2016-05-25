@@ -4,7 +4,7 @@
 	Purpose: Implementation of the specific resource provider
 
 	@author Lukas Mueller (ilt.hsr.ch)
-	@version 0.1 2015_10_07
+	@version 0.2 2016_05_25
 */
 
 #include "ResourceProvider.h"
