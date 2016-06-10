@@ -4,7 +4,7 @@
 	Purpose: Central class of a specific implemention. Usually used to communicate with the device. An instance is just deleted and new generated with the reset command. Every command can use it.
 
 	@author Lukas Mueller (ilt.hsr.ch)
-	@version 0.2 2016_05_25
+	@version 0.3 2016_06_10
 */
 
 #include "SpecificCore.h"
@@ -1832,7 +1832,7 @@ namespace SPI
 			_io_service_keep_running = true;
 			_io_service_thread = new std::thread(&SpecificCore::runIOService, this);
 
-	#ifdef LINUX
+	#ifdef __linux__
 			std::string portList[] = {"/dev/ttyUSB0", "/dev/ttyUSB1"};
 	#else
 			std::string portList[] = {"COM9", "COM8", "COM7", "COM6", "COM5", "COM4", "COM3", "COM2", "COM1"};

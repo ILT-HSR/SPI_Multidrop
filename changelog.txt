@@ -1,5 +1,9 @@
 SPI_Multidrop Changelog
 
+--- 2.0.3 --- 2016_06_10
+- Change PreCom-Symbols to __linux__
+- Update SPICE to 1.0.5 and (keep) POCO in 1.7.3
+
 --- 2.0.2 --- 2016_05_25
 - Update SPICE to 1.0.4 and POCO to 1.7.3
 - Fixing Bug: Deadlock during startup on Debian in specific case (Missing Multidrop, RS232-Adapter available)

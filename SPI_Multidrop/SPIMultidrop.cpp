@@ -1,12 +1,12 @@
 // SPIMultidrop.cpp : Definiert den Einstiegspunkt für die Konsolenanwendung.
 //
 
-#ifdef LINUX
+#ifdef __linux__
 #include <unistd.h>
 #else
 #include "stdafx.h"
 #define POCO_NO_UNWINDOWS
-#endif // LINUX
+#endif // __linux__
 
 #include <iostream>
 
@@ -14,7 +14,7 @@
 #include "EthernetServer.h"
 #include "ResourceProvider.h"
 
-#ifdef LINUX
+#ifdef __linux__
 int main()
 {
     if(true)
@@ -34,7 +34,7 @@ int main()
 #else
 int _tmain()
 {
-#endif
+#endif // __linux__
 	// SpecificCoreContainer
 	std::cout << "Search for connected Multidrop... " << std::flush;
 	std::shared_ptr<SPI::Multidrop::SpecificCoreContainer> specificCoreContainer(new SPI::Multidrop::SpecificCoreContainer());
