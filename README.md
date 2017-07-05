@@ -1,6 +1,6 @@
 # ![SPICE Logo](/SPICE_064.png) SPI_Multidrop
 
-SPI_Multidrop is an implemented SiLA ServiceProvider based on [SPICE](https://github.com/LukasMuellerILT/SPICE).
+SPI_Multidrop is an implemented SiLA ServiceProvider based on [SPICE](https://github.com/ILT-HSR/SPICE).
 
 ## Supported Multidrops
 * Multidrop Combi
